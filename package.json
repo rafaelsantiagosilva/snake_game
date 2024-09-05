@@ -1,0 +1,20 @@
+{
+  "name": "snake_game",
+  "version": "1.0.0",
+  "description": "Bem-vindo ao repositório do Snack Game! Este projeto é voltado para iniciantes e tem como objetivo ensinar conceitos básicos de programação através do desenvolvimento de um simples jogo da cobrinha.",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx --mode=development webpack -w",
+    "build": "npx --mode=production webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.5.4",
+    "webpack-cli": "^5.1.4"
+  }
+}
