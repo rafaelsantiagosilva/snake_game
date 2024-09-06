@@ -1,0 +1,29 @@
+@import url(./reset.css);
+@import url(./variables.css);
+
+body {
+  background-color: var(--body_color);
+  color: var(--text_color);
+}
+
+.main_title {
+  text-align: center;
+  margin: 1rem;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game {
+  margin: 0 auto;
+  border: 1px solid #fff;
+  background-color: #020202;
+}
+
+.footer {
+  text-align: center;
+  margin: 1rem;
+}
