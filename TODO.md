@@ -12,9 +12,9 @@ O Snack Game é uma implementação clássica do jogo da cobrinha, onde o jogado
   O jogo deve renderizar a interface visual da cobrinha no tabuleiro.
 - [X] Requisito Funcional 02: Mover a Cobra
   O sistema deve permitir que a cobra se mova pelo tabuleiro em diferentes direções (cima, baixo, esquerda, direita).
-- [ ] Requisito Funcional 03: Comer o Pixel e Crescer a Cobra
+- [X] Requisito Funcional 03: Comer o Pixel e Crescer a Cobra
   Cada vez que a cobra comer um pixel, ela deve crescer de tamanho.
-- [ ] Requisito Funcional 04: Bater na Parede
+- [X] Requisito Funcional 04: Bater na Parede
   Se a cobra bater em uma das paredes do tabuleiro, o jogo termina.
 - [ ] Requisito Funcional 05: Bater em Si Mesma
   Se a cobra colidir com seu próprio corpo, o jogo termina.
@@ -25,9 +25,9 @@ O Snack Game é uma implementação clássica do jogo da cobrinha, onde o jogado
 - [X] Tarefa 02: renderizar cobrinha :: nessa tarefa o dev deve renderizar a cobra dentro do quadro do jogo
 - [X] Tarefa 03: configurar eventos de teclado :: nessa tarefa o dev precisa fazer configurar os eventos de teclado
 - [X] Tarefa 04: atualizar posição da corba após movimento :: nessa tarefa o dev precisará exibir a nova posição da cobra.
-- [ ] Tarefa 05: adicionar pixel a cobra :: nessa tarefa o dev deverá adicionar um novo pixel ao tamanho da cobra
-- [ ] Tarefa 06: adicionar nova comida :: após comer o pixel, uma nova comida deverá ser exibida no jogo
-- [ ] Tarefa 07: após movimento, obter posição da cobra e verificar se ela bateu na parede
+- [X] Tarefa 05: adicionar pixel a cobra :: nessa tarefa o dev deverá adicionar um novo pixel ao tamanho da cobra
+- [X] Tarefa 06: adicionar nova comida :: após comer o pixel, uma nova comida deverá ser exibida no jogo
+- [X] Tarefa 07: após movimento, obter posição da cobra e verificar se ela bateu na parede
 - [ ] Tarefa 08: após movimento, obter a posição da cobra e verificar se ela bateu nela mesma. Caso a cabeça da cobra coincida com o corpo da cobra, ela morre.
 - [ ] Tarefa 09: assegurar que a cobra não dá ré :: o dev deverá assegurar que a só poderá seguir por uma mesma direção. caso o usuário tente voltar, ele avança um pixel na mesma direção.
 

@@ -1,4 +1,3 @@
-import Square from "./classes/Square";
 import SnakeBody from "./classes/SnakeBody";
 import Apple from "./classes/Apple";
 
@@ -7,14 +6,31 @@ import Direction from "./enums/Direction";
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d")!;
 
-const standardSquareSize = Square.size;
-const snake = [
-  new SnakeBody(canvas.width / 2, canvas.height / 2),
-  new SnakeBody((canvas.width / 2) - standardSquareSize, (canvas.height / 2)),
-  new SnakeBody((canvas.width / 2) - standardSquareSize *2, (canvas.height / 2))
-];
+const snake = [new SnakeBody(canvas.width / 2, canvas.height / 2)];
+const apple: Apple = new Apple(snake[0].getX(), snake[0].getY());
+const standardSquareSize = snake[0].size;
 
 let snakeDirection: Direction | null = null;
+
+const resetGame = () => {
+  snake[0].setX(canvas.width / 2);
+  snake[0].setY(canvas.height / 2);
+  snakeDirection = null;
+  apple.newRandomPosition(canvas.width, canvas.height);
+  while (
+    apple.getX() === snake[0].getX() ||
+    apple.getY() === snake[0].getY()
+  )
+    apple.newRandomPosition(canvas.width, canvas.height);
+}
+
+apple.newRandomPosition(canvas.width, canvas.height);
+
+while (
+  apple.getX() === snake[0].getX() ||
+  apple.getY() === snake[0].getY()
+)
+  apple.newRandomPosition(canvas.width, canvas.height);
 
 const clearAllCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -23,11 +39,6 @@ const clearAllCanvas = () => {
 const moveSnake = () => {
   if (!snakeDirection) return;
 
-  // Armazenar as posições anteriores
-  let previousX = snake[0].getX();
-  let previousY = snake[0].getY();
-
-  // Movimentar a cabeça da cobra
   switch (snakeDirection) {
     case Direction.Up:
       snake[0].setY(snake[0].getY() - standardSquareSize);
@@ -43,21 +54,16 @@ const moveSnake = () => {
       break;
   }
 
-  // Movimentar o corpo da cobra (partes que seguem a cabeça)
   for (let i = 1; i < snake.length; i++) {
-    const tempX = snake[i].getX();
-    const tempY = snake[i].getY();
-
-    snake[i].setX(previousX);
-    snake[i].setY(previousY);
-
-    previousX = tempX;
-    previousY = tempY;
+    if (i != 0) {
+      snake[i].setX(snake[i - 1].getX());
+      snake[i].setY(snake[i - 1].getY());
+    }
   }
 };
 
 const drawLines = () => {
-  ctx.strokeStyle = "#fff";
+  ctx.strokeStyle = "#ffffffa8";
   ctx.beginPath();
   ctx.moveTo(0, 0);
 
@@ -75,8 +81,6 @@ const drawLines = () => {
 };
 
 const drawSnake = () => {
-  let previousBody: null | SnakeBody = null;
-
   clearAllCanvas();
   drawLines();
 
@@ -86,6 +90,16 @@ const drawSnake = () => {
     ctx.fillRect(body.getX(), body.getY(), standardSquareSize, standardSquareSize);
   }
 };
+
+const drawApple = () => {
+  drawLines();
+  drawSnake();
+
+  ctx.beginPath();
+  ctx.fillStyle = apple.getColor();
+  ctx.fillRect(apple.getX(), apple.getY(), standardSquareSize, standardSquareSize);
+  console.table(apple);
+}
 
 const changeDirection = (key: string) => {
   const keyDirection: string = key.slice(5, key.length);
@@ -97,11 +111,73 @@ const receiveKeydown = (event: KeyboardEvent) => {
   changeDirection(key);
 }
 
-drawLines();
+const drawGame = () => {
+  drawApple();
+}
+
+// TODO: Consertar colisão com maçã
+const checkSnakeWithAppleCollision = () => {
+  if (snake[0].getX() === apple.getX() &&
+    snake[0].getY() === apple.getY()) {
+
+    const newSegment = new SnakeBody(apple.getX(), apple.getY())
+
+    switch (snakeDirection) {
+      case Direction.Up:
+        newSegment.setY(snake[0].getY() - standardSquareSize);
+        break;
+      case Direction.Down:
+        newSegment.setY(snake[0].getY() + standardSquareSize);
+        break;
+      case Direction.Left:
+        newSegment.setX(snake[0].getX() - standardSquareSize);
+        break;
+      case Direction.Right:
+        newSegment.setX(snake[0].getX() + standardSquareSize);
+        break;
+    }
+
+    snake.push(newSegment);
+    apple.newRandomPosition(canvas.width, canvas.height);
+  }
+}
+
+const checkSnakeWithWallCollision = () => {
+  if (
+    snake[0].getX() === -standardSquareSize ||
+    snake[0].getX() === canvas.width ||
+    snake[0].getY() === -standardSquareSize ||
+    snake[0].getY() === canvas.height
+  ) {
+    alert('Game Over');
+    resetGame();
+  }
+}
+
+// TODO: Consertar colisão com a cobra
+const checkSnakeWithSnakeCollision = () => {
+  for (let i = 1; i < snake.length; i++) {
+    if (
+      snake[0].getX() === snake[i].getX() &&
+      snake[0].getY() === snake[i].getY() &&
+      !(snake[0].getX() === apple.getX() && snake[0].getY() === apple.getY())
+    ) {
+      alert('Game Over');
+      resetGame();
+    }
+  }
+}
 
 setInterval(() => {
   moveSnake();
-  drawSnake();
-}, 500);
+  drawGame();
+  checkSnakeWithAppleCollision();
+  checkSnakeWithWallCollision();
+  // checkSnakeWithSnakeCollision();
+}, 200);
+
+canvas.addEventListener("load", () => {
+  drawGame();
+});
 
 document.addEventListener("keydown", receiveKeydown);

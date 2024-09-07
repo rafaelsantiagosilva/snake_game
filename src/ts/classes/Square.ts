@@ -1,7 +1,7 @@
 export default abstract class Body {
   protected x: number;
   protected y: number;
-  public static size: number = 50;
+  public size: number = 25;
 
   constructor(x:number, y:number) {
     this.x = x;
