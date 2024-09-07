@@ -16,7 +16,7 @@ O Snack Game é uma implementação clássica do jogo da cobrinha, onde o jogado
   Cada vez que a cobra comer um pixel, ela deve crescer de tamanho.
 - [X] Requisito Funcional 04: Bater na Parede
   Se a cobra bater em uma das paredes do tabuleiro, o jogo termina.
-- [ ] Requisito Funcional 05: Bater em Si Mesma
+- [X] Requisito Funcional 05: Bater em Si Mesma
   Se a cobra colidir com seu próprio corpo, o jogo termina.
 
 ## Tarefas
@@ -28,8 +28,8 @@ O Snack Game é uma implementação clássica do jogo da cobrinha, onde o jogado
 - [X] Tarefa 05: adicionar pixel a cobra :: nessa tarefa o dev deverá adicionar um novo pixel ao tamanho da cobra
 - [X] Tarefa 06: adicionar nova comida :: após comer o pixel, uma nova comida deverá ser exibida no jogo
 - [X] Tarefa 07: após movimento, obter posição da cobra e verificar se ela bateu na parede
-- [ ] Tarefa 08: após movimento, obter a posição da cobra e verificar se ela bateu nela mesma. Caso a cabeça da cobra coincida com o corpo da cobra, ela morre.
-- [ ] Tarefa 09: assegurar que a cobra não dá ré :: o dev deverá assegurar que a só poderá seguir por uma mesma direção. caso o usuário tente voltar, ele avança um pixel na mesma direção.
+- [X] Tarefa 08: após movimento, obter a posição da cobra e verificar se ela bateu nela mesma. Caso a cabeça da cobra coincida com o corpo da cobra, ela morre.
+- [X] Tarefa 09: assegurar que a cobra não dá ré :: o dev deverá assegurar que a só poderá seguir por uma mesma direção. caso o usuário tente voltar, ele avança um pixel na mesma direção.
 
 ## Como Contribuir
 

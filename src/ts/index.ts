@@ -10,19 +10,9 @@ const snake = [new SnakeBody(canvas.width / 2, canvas.height / 2)];
 const apple: Apple = new Apple(snake[0].getX(), snake[0].getY());
 const standardSquareSize = snake[0].size;
 
-let snakeDirection: Direction | null = null;
+const scoreDOM = document.getElementById('score')!;
 
-const resetGame = () => {
-  snake[0].setX(canvas.width / 2);
-  snake[0].setY(canvas.height / 2);
-  snakeDirection = null;
-  apple.newRandomPosition(canvas.width, canvas.height);
-  while (
-    apple.getX() === snake[0].getX() ||
-    apple.getY() === snake[0].getY()
-  )
-    apple.newRandomPosition(canvas.width, canvas.height);
-}
+let snakeDirection: Direction | null = null;
 
 apple.newRandomPosition(canvas.width, canvas.height);
 
@@ -36,8 +26,52 @@ const clearAllCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+const loadRecord = () => {
+  const recordDOM = document.getElementById('record')!;
+
+  if (!localStorage.getItem('record')!) {
+    recordDOM.innerText = '0';
+  } else {
+    recordDOM.innerText = localStorage.getItem('record')!;
+  }
+
+}
+
+const playSound = () => {
+  const audio = new Audio();
+  audio.src = '../../src/assets/eat_sound.mp3';
+  audio.play();
+}
+
+const resetGame = () => {
+  clearAllCanvas();
+
+  while (snake.length != 1)
+    snake.pop();
+
+  snake[0].setX(canvas.width / 2);
+  snake[0].setY(canvas.height / 2);
+  snakeDirection = null;
+  apple.newRandomPosition(canvas.width, canvas.height);
+  while (
+    apple.getX() === snake[0].getX() ||
+    apple.getY() === snake[0].getY()
+  )
+    apple.newRandomPosition(canvas.width, canvas.height);
+
+  scoreDOM.innerText = "0";
+}
+
+const gameOver = () => {
+  alert('Fim de jogo!');
+  resetGame();
+}
+
 const moveSnake = () => {
   if (!snakeDirection) return;
+
+  let previousX = snake[0].getX();
+  let previousY = snake[0].getY();
 
   switch (snakeDirection) {
     case Direction.Up:
@@ -55,15 +89,20 @@ const moveSnake = () => {
   }
 
   for (let i = 1; i < snake.length; i++) {
-    if (i != 0) {
-      snake[i].setX(snake[i - 1].getX());
-      snake[i].setY(snake[i - 1].getY());
-    }
+    const tempX = snake[i].getX();
+    const tempY = snake[i].getY();
+
+    snake[i].setX(previousX);
+    snake[i].setY(previousY);
+
+    previousX = tempX;
+    previousY = tempY;
   }
 };
 
 const drawLines = () => {
-  ctx.strokeStyle = "#ffffffa8";
+  const linesColor = "#ffffffa8";
+  ctx.strokeStyle = linesColor;
   ctx.beginPath();
   ctx.moveTo(0, 0);
 
@@ -81,29 +120,41 @@ const drawLines = () => {
 };
 
 const drawSnake = () => {
-  clearAllCanvas();
-  drawLines();
+  ctx.beginPath();
 
   for (const body of snake) {
-    ctx.beginPath();
     ctx.fillStyle = body.getColor();
     ctx.fillRect(body.getX(), body.getY(), standardSquareSize, standardSquareSize);
   }
 };
 
 const drawApple = () => {
-  drawLines();
-  drawSnake();
-
   ctx.beginPath();
   ctx.fillStyle = apple.getColor();
   ctx.fillRect(apple.getX(), apple.getY(), standardSquareSize, standardSquareSize);
-  console.table(apple);
+}
+
+const isValidChangeOfDirection = (keyDirection: string) => {
+  if (keyDirection === "Up" && snakeDirection === Direction.Down)
+    return false;
+
+  if (keyDirection === "Down" && snakeDirection === Direction.Up)
+    return false;
+
+  if (keyDirection === "Left" && snakeDirection === Direction.Right)
+    return false;
+
+  if (keyDirection === "Right" && snakeDirection === Direction.Left)
+    return false;
+
+  return true;
 }
 
 const changeDirection = (key: string) => {
   const keyDirection: string = key.slice(5, key.length);
-  snakeDirection = keyDirection as Direction;
+
+  if (isValidChangeOfDirection(keyDirection))
+    snakeDirection = keyDirection as Direction;
 }
 
 const receiveKeydown = (event: KeyboardEvent) => {
@@ -112,33 +163,26 @@ const receiveKeydown = (event: KeyboardEvent) => {
 }
 
 const drawGame = () => {
+  clearAllCanvas();
+  drawLines();
+  drawSnake();
   drawApple();
 }
 
-// TODO: Consertar colisão com maçã
 const checkSnakeWithAppleCollision = () => {
   if (snake[0].getX() === apple.getX() &&
     snake[0].getY() === apple.getY()) {
+    const lastBody = snake[snake.length - 1];
+    snake.push(new SnakeBody(lastBody.getX() + standardSquareSize, lastBody.getY() + standardSquareSize));
+    playSound();
+    apple.newRandomPosition(canvas.width, canvas.height);
+    scoreDOM.innerText = (parseInt(scoreDOM.innerText) + 1).toString();
 
-    const newSegment = new SnakeBody(apple.getX(), apple.getY())
-
-    switch (snakeDirection) {
-      case Direction.Up:
-        newSegment.setY(snake[0].getY() - standardSquareSize);
-        break;
-      case Direction.Down:
-        newSegment.setY(snake[0].getY() + standardSquareSize);
-        break;
-      case Direction.Left:
-        newSegment.setX(snake[0].getX() - standardSquareSize);
-        break;
-      case Direction.Right:
-        newSegment.setX(snake[0].getX() + standardSquareSize);
-        break;
+    if (!localStorage.getItem('record') || parseInt(localStorage.getItem('record')!) < parseInt(scoreDOM.innerText)) {
+      localStorage.setItem('record', scoreDOM.innerText);
     }
 
-    snake.push(newSegment);
-    apple.newRandomPosition(canvas.width, canvas.height);
+    loadRecord();
   }
 }
 
@@ -148,23 +192,18 @@ const checkSnakeWithWallCollision = () => {
     snake[0].getX() === canvas.width ||
     snake[0].getY() === -standardSquareSize ||
     snake[0].getY() === canvas.height
-  ) {
-    alert('Game Over');
-    resetGame();
-  }
+  )
+    gameOver();
 }
 
-// TODO: Consertar colisão com a cobra
 const checkSnakeWithSnakeCollision = () => {
   for (let i = 1; i < snake.length; i++) {
     if (
       snake[0].getX() === snake[i].getX() &&
       snake[0].getY() === snake[i].getY() &&
       !(snake[0].getX() === apple.getX() && snake[0].getY() === apple.getY())
-    ) {
-      alert('Game Over');
-      resetGame();
-    }
+    )
+      gameOver();
   }
 }
 
@@ -173,11 +212,10 @@ setInterval(() => {
   drawGame();
   checkSnakeWithAppleCollision();
   checkSnakeWithWallCollision();
-  // checkSnakeWithSnakeCollision();
+  checkSnakeWithSnakeCollision();
 }, 200);
 
-canvas.addEventListener("load", () => {
-  drawGame();
-});
+drawGame();
+loadRecord();
 
 document.addEventListener("keydown", receiveKeydown);
