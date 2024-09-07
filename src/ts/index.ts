@@ -16,11 +16,14 @@ let snakeDirection: Direction | null = null;
 
 apple.newRandomPosition(canvas.width, canvas.height);
 
-while (
-  apple.getX() === snake[0].getX() ||
-  apple.getY() === snake[0].getY()
-)
-  apple.newRandomPosition(canvas.width, canvas.height);
+for (const body of snake) {
+  while (
+    apple.getX() === body.getX() ||
+    apple.getY() === body.getY()
+  )
+    apple.newRandomPosition(canvas.width, canvas.height);
+}
+
 
 const clearAllCanvas = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -34,12 +37,11 @@ const loadRecord = () => {
   } else {
     recordDOM.innerText = localStorage.getItem('record')!;
   }
-
 }
 
 const playSound = () => {
   const audio = new Audio();
-  audio.src = '../../src/assets/eat_sound.mp3';
+  audio.src = '/../../src/assets/eat_sound.mp3';
   audio.play();
 }
 
